@@ -1,0 +1,21 @@
+{
+  "name": "parquet-view",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "serve": "./dev_server.js",
+    "build-ui": "./build-ui",
+    "build-wasm": "wasm-pack build --out-dir www/wasm-pkg",
+    "clean": "rm -rf elm.js wasm-pkg dist/main.js dist/*.wasm"
+  },
+  "type": "module",
+  "author": "mv",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "0.19.5",
+    "esbuild-plugin-wasm": "^1.1.0"
+  },
+  "dependencies": {
+    "elm-esm": "^1.1.4"
+  }
+}

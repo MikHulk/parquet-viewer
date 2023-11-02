@@ -1,0 +1,6 @@
+/target
+/www/dist/main.js
+/www/dist/*.wasm
+/www/elm-src/elm-stuff/
+/www/elm.js
+/www/node_modules/
