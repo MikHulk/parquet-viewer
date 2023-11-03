@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "serve": "./dev_server.js",
-    "build-ui": "./build-ui",
-    "build-wasm": "wasm-pack build --out-dir www/wasm-pkg",
-    "clean": "rm -rf elm.js wasm-pkg dist/main.js dist/*.wasm"
+    "serve": "./scripts/dev_server.js",
+    "build-ui": "./scripts/build-ui",
+    "build-wasm": "wasm-pack build --out-dir www/build/wasm-pkg",
+    "clean": "rm -rf build dist/{*.js,*.css,*wasm}"
   },
   "type": "module",
   "author": "mv",

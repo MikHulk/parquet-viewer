@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-
-cd ./elm-src
-../node_modules/.bin/elm-esm make ./src/Main.elm --optimize --output=../elm.js
-cd -

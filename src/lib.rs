@@ -13,5 +13,4 @@ extern {
 
 #[wasm_bindgen]
 pub fn greet() {
-    alert("Fuckoff!");
 }
