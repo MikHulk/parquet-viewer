@@ -1,6 +1,6 @@
 # USAGE
 
-all build step can be performed from npm in `./www`.
+all build step can be performed with npm from `./www`.
 
 ## Build Elm UI 
 
