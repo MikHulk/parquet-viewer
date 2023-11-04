@@ -1,4 +1,4 @@
-import { get_content } from "./build/wasm-pkg/parquet_viewer.js";
+import { get_content, Container } from "./build/wasm-pkg/parquet_viewer.js";
 import { Elm } from "./build/elm.js";
 
 customElements.define(
@@ -6,20 +6,26 @@ customElements.define(
   class extends HTMLElement {
     constructor() {
       super();
-      this.content = null;
+      this.container = Container.new();
     }
     connectedCallback() { this.setContent(); }
     attributeChangedCallback() { this.setContent(); }
     static get observedAttributes() { return ['name']; }
     
-    setContent()
-    {
-      if (this.content) {
-        this.removeChild(this.content);
-      }
-      this.content = get_content(this.getAttribute('name'));
-      this.appendChild(this.content);
+    
+    setContent() {
+      console.log("up");
+      let oldEl = document.getElementById("greeting");
+      let content = get_content(this.getAttribute('name'));
+      if (oldEl)
+        this.replaceChild(content, oldEl);
+      else
+        this.appendChild(content);
+      let oldList = document.getElementById("pl-series");
+      if (!oldList)
+        this.appendChild(this.container.to_html());
     }
+    
   }
 );
 
