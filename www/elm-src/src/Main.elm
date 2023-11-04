@@ -1,8 +1,9 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import Html
+import Html.Events as HtmlEv
+import Html.Attributes as HtmlAttr
 
 
 
@@ -10,40 +11,46 @@ import Html.Events exposing (onClick)
 
 
 main =
-  Browser.sandbox { init = init, update = update, view = view }
+    Browser.sandbox { init = init, update = update, view = view }
 
 
 
 -- MODEL
 
-type alias Model = Int
+
+type alias Model =
+    String
+
 
 init : Model
 init =
-  0
+    ""
+
 
 
 -- UPDATE
 
-type Msg = Increment | Decrement
+
+type Msg
+    = NewName String
+
 
 update : Msg -> Model -> Model
 update msg model =
-  case msg of
-    Increment ->
-      model + 1
+    case msg of
+        NewName name ->
+            name
 
-    Decrement ->
-      model - 1
 
 
 -- VIEW
 
-view : Model -> Html Msg
-view model =
-  div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text (String.fromInt model) ]
-    , button [ onClick Increment ] [ text "+" ]
-    ]
- 
+
+view : Model -> Html.Html Msg
+view name =
+    Html.div []
+        [ Html.input
+            [ HtmlAttr.placeholder "enter your name", HtmlAttr.value name, HtmlEv.onInput NewName ]
+            []
+        , Html.node "wasm-wrapper" [ HtmlAttr.attribute "name" name ] []
+        ]

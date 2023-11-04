@@ -1,4 +1,5 @@
 use wasm_bindgen::prelude::*;
+use web_sys::Element;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -6,11 +7,14 @@ use wasm_bindgen::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-#[wasm_bindgen]
-extern {
-    fn alert(s: &str);
-}
 
 #[wasm_bindgen]
-pub fn greet() {
+pub fn get_content(name: &str) -> Result<Element, JsValue> {
+    let window = web_sys::window().expect("no global `window` exists");
+    let document = window.document().expect("should have a document on window");
+
+    let val = document.create_element("p")?;
+    val.set_text_content(Some(&format!("Hello {} from Rust!", name)));
+
+    Ok(val)
 }
