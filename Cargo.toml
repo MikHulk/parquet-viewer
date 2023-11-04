@@ -9,6 +9,27 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 wasm-bindgen = "0.2.88"
 
+[dependencies.polars]
+# version = "~0.34"
+git =  "https://github.com/pola-rs/polars"
+features = [
+  "dtype-full",
+  # "list",
+  "mode",
+  "csv",
+  "lazy",
+  "strings",
+  "temporal",
+  "rows",
+  "cum_agg",
+  "rolling_window",
+  "round_series",
+  # "arange",
+  "diagonal_concat",
+  "ndarray"
+]
+default-features = false
+
 [dependencies.web-sys]
 version = "0.3.65"
 features = [
