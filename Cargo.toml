@@ -14,6 +14,7 @@ wasm-bindgen = "0.2.88"
 git =  "https://github.com/pola-rs/polars"
 features = [
   "dtype-full",
+  "fmt_no_tty",
   # "list",
   "mode",
   "csv",
