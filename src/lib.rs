@@ -1,6 +1,6 @@
+use polars::prelude::*;
 use wasm_bindgen::prelude::*;
 use web_sys::Element;
-use polars::prelude::*;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -20,39 +20,48 @@ impl Container {
         Self {
             data: df!(
                 "a" => &[1, 2, 3, 4, 5],
-                "b" => &[6, 7, 8, 9, 0],
-            ).unwrap(),
+                "b" => &[6.0, 7.1, 8.2, 9.3, 0.4],
+            )
+            .unwrap(),
         }
-    }
-
-    pub fn to_str(&self) -> String {
-        format!("{}", self.data)
     }
 
     pub fn to_html(&self) -> Result<Element, JsValue> {
         let window = web_sys::window().expect("no global `window` exists");
         let document = window.document().expect("should have a document on window");
-
-        Ok(
-            match self.data.clone().lazy().select([col("c")]).collect() {
-                Err(e) => {
-                    let error_msg = document.create_element("p")?;
-                    error_msg.set_attribute("id", "pl-series")?;
-                    error_msg.set_text_content(Some(&format!("{}", e)));
-                    error_msg
-                }
-                Ok(serie) => {
-                    let html_list = document.create_element("ul")?;
-                    html_list.set_attribute("id", "pl-series")?;
-                    for item in serie.iter() {
-                        let li = document.create_element("li")?;
-                        li.set_text_content(Some(&format!("{}", item)));
-                        html_list.append_child(&li)?;
-                    }
-                    html_list
-                }
+        let html_table = document.create_element("table")?;
+        let thead = document.create_element("thead")?;
+        html_table.append_child(&thead)?;
+        let tr = document.create_element("tr")?;
+        thead.append_child(&tr)?;
+        for col_name in self.data.get_column_names().iter() {
+            let th = document.create_element("th")?;
+            th.set_text_content(Some(col_name));
+            tr.append_child(&th)?;
+        }
+        html_table.set_attribute("id", "pl-series")?;
+        // for s in self.data.iter() {
+        for idx in 0..self.data.height() {
+            let row = self.data.get_row(idx).unwrap();
+            let tr = document.create_element("tr")?;
+            html_table.append_child(&tr)?;
+            for val in row.0.iter() {
+                let td = document.create_element("td")?;
+                tr.append_child(&td)?;
+                td.set_text_content(Some(&format!("{}", val)));
             }
-        )
+        }
+        Ok(html_table)
+    }
+}
+
+impl Container {
+    pub fn to_str(&self) -> String {
+        format!("{}", self.data)
+    }
+
+    pub fn get_data(&self) -> &DataFrame {
+        &self.data
     }
 }
 
