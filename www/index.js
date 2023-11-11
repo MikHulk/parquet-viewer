@@ -1,5 +1,11 @@
-import { get_content, Container } from "./build/wasm-pkg/parquet_viewer.js";
+import {
+  get_content,
+  Container,
+  set_panic_hook,
+} from "./build/wasm-pkg/parquet_viewer.js";
 import { Elm } from "./build/elm.js";
+
+set_panic_hook();
 
 customElements.define(
   'wasm-wrapper',

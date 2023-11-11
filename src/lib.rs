@@ -1,6 +1,12 @@
 use polars::prelude::*;
 use wasm_bindgen::prelude::*;
-use web_sys::Element;
+use web_sys::{console, Element};
+
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        console::log_1(&format!( $( $t )* ).into());
+    }
+}
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -12,6 +18,18 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 #[derive(Debug)]
 pub struct Container {
     data: DataFrame,
+}
+
+#[wasm_bindgen]
+pub fn set_panic_hook() -> Result<(), JsValue> {
+    #[cfg(feature = "console_error_panic_hook")]
+    {
+        log!("panic hook enabled");
+        extern crate console_error_panic_hook;
+        use std::panic;
+        panic::set_hook(Box::new(console_error_panic_hook::hook));
+    }
+    Ok(())
 }
 
 #[wasm_bindgen]

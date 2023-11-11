@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "./scripts/dev_server.js",
     "build-ui": "./scripts/build-ui",
-    "build-wasm": "wasm-pack build --out-dir www/build/wasm-pkg",
+    "build-wasm": "wasm-pack build --out-dir www/build/wasm-pkg .. -- -F console_error_panic_hook",
     "clean": "rm -rf build dist/{*.js,*.css,*wasm}"
   },
   "type": "module",
