@@ -39,28 +39,51 @@ impl Container {
             data: df!(
                 "a" => &[1, 2, 3, 4, 5],
                 "b" => &[6.0, 7.1, 8.2, 9.3, 0.4],
+                "c" => &["un", "deux", "trois", "quatre", "cinq"],
             )
             .unwrap(),
         }
     }
 
-    pub fn to_html(&self) -> Result<Element, JsValue> {
+    pub fn to_html(&self, wanted_columns: Vec<String>) -> Result<Element, JsValue> {
+        log!("get {:?} columns", wanted_columns);
+
         let window = web_sys::window().expect("no global `window` exists");
         let document = window.document().expect("should have a document on window");
+
         let html_table = document.create_element("table")?;
         let thead = document.create_element("thead")?;
         html_table.append_child(&thead)?;
         let tr = document.create_element("tr")?;
         thead.append_child(&tr)?;
-        for col_name in self.data.get_column_names().iter() {
+        let data_cols = {
+            let actual_columns = self.data.get_column_names();
+            if !wanted_columns.is_empty() {
+                actual_columns
+                    .into_iter()
+                    .filter(|col| {
+                        !wanted_columns
+                            .iter()
+                            .filter(|c| c == col)
+                            .collect::<Vec<_>>()
+                            .is_empty()
+                    })
+                    .collect()
+            } else {
+                actual_columns
+            }
+        };
+        for col_name in &data_cols {
             let th = document.create_element("th")?;
             th.set_text_content(Some(col_name));
             tr.append_child(&th)?;
         }
         html_table.set_attribute("id", "pl-series")?;
-        // for s in self.data.iter() {
-        for idx in 0..self.data.height() {
-            let row = self.data.get_row(idx).unwrap();
+        // TODO: removes unwrap
+        let selection = self.data.select(data_cols).unwrap();
+        for idx in 0..selection.height() {
+            // TODO: removes unwrap
+            let row = selection.get_row(idx).unwrap();
             let tr = document.create_element("tr")?;
             html_table.append_child(&tr)?;
             for val in row.0.iter() {

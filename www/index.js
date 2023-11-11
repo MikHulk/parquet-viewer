@@ -28,8 +28,15 @@ customElements.define(
       else
         this.appendChild(content);
       let oldList = document.getElementById("pl-series");
-      if (!oldList)
-        this.appendChild(this.container.to_html());
+      let colls = this.getAttributeNames().reduce(
+        (c, s) => s.startsWith('coll-') ? c.concat([s.slice(5)]) : c,
+        []
+      );
+      let newItem = this.container.to_html(colls=colls);
+      if (oldList)
+        this.replaceChild(newItem, oldList);
+      else
+        this.appendChild(newItem);
     }
     
   }

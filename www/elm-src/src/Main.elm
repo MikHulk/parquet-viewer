@@ -2,8 +2,8 @@ module Main exposing (..)
 
 import Browser
 import Html
-import Html.Events as HtmlEv
 import Html.Attributes as HtmlAttr
+import Html.Events as HtmlEv
 
 
 
@@ -50,7 +50,15 @@ view : Model -> Html.Html Msg
 view name =
     Html.div []
         [ Html.input
-            [ HtmlAttr.placeholder "enter your name", HtmlAttr.value name, HtmlEv.onInput NewName ]
+            [ HtmlAttr.placeholder "enter your name"
+            , HtmlAttr.value name
+            , HtmlEv.onInput NewName
+            ]
             []
-        , Html.node "wasm-wrapper" [ HtmlAttr.attribute "name" name ] []
+        , Html.node "wasm-wrapper"
+            [ HtmlAttr.attribute "name" name
+            , HtmlAttr.attribute "coll-a" "true"
+            , HtmlAttr.attribute "coll-c" "true"
+            ]
+            []
         ]
