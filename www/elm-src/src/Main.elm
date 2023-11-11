@@ -19,12 +19,12 @@ main =
 
 
 type alias Model =
-    String
+    { selected : List String }
 
 
 init : Model
 init =
-    ""
+    { selected = [ "coll-a", "coll-b", "coll-c" ] }
 
 
 
@@ -32,14 +32,18 @@ init =
 
 
 type Msg
-    = NewName String
+    = Check String
+    | Uncheck String
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        NewName name ->
-            name
+        Uncheck s ->
+            { model | selected = List.filter (\s_ -> s_ /= s) model.selected }
+
+        Check s ->
+            { model | selected = s :: model.selected }
 
 
 
@@ -47,18 +51,44 @@ update msg model =
 
 
 view : Model -> Html.Html Msg
-view name =
-    Html.div []
-        [ Html.input
-            [ HtmlAttr.placeholder "enter your name"
-            , HtmlAttr.value name
-            , HtmlEv.onInput NewName
-            ]
-            []
+view model =
+    let
+        selector =
+            Html.div
+                [ HtmlAttr.style "flex" "0.2"
+                , HtmlAttr.style "padding" "8px"
+                ]
+            <|
+                List.map
+                    (\name ->
+                        Html.div []
+                            [ Html.input
+                                [ HtmlAttr.value name
+                                , HtmlAttr.type_ "checkbox"
+                                , HtmlAttr.checked <|
+                                    not <|
+                                        List.isEmpty <|
+                                            List.filter ((==) name) model.selected
+                                , HtmlEv.onCheck
+                                    (\checked ->
+                                        if checked then
+                                            Check name
+
+                                        else
+                                            Uncheck name
+                                    )
+                                ]
+                                []
+                            , Html.label [] [ Html.text name ]
+                            ]
+                    )
+                    [ "coll-a", "coll-b", "coll-c" ]
+    in
+    Html.div
+        [ HtmlAttr.style "display" "flex"
+        ]
+        [ selector
         , Html.node "wasm-wrapper"
-            [ HtmlAttr.attribute "name" name
-            , HtmlAttr.attribute "coll-a" "true"
-            , HtmlAttr.attribute "coll-c" "true"
-            ]
+            (List.map (\name -> HtmlAttr.attribute name "true") model.selected)
             []
         ]

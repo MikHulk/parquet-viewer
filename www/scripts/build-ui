@@ -8,5 +8,5 @@ if [ ! -d "$BUILD_DIR" ]; then
 fi
 
 cd ./elm-src
-../node_modules/.bin/elm-esm make ./src/Main.elm --optimize --output=../build/elm.js
+../node_modules/.bin/elm-esm make ./src/Main.elm --debug --output=../build/elm.js
 cd -

@@ -16,27 +16,21 @@ customElements.define(
     }
     connectedCallback() { this.setContent(); }
     attributeChangedCallback() { this.setContent(); }
-    static get observedAttributes() { return ['name']; }
+    static get observedAttributes() { return ['coll-a', 'coll-b', 'coll-c']; }
     
     
     setContent() {
-      console.log("up");
-      let oldEl = document.getElementById("greeting");
-      let content = get_content(this.getAttribute('name'));
-      if (oldEl)
-        this.replaceChild(content, oldEl);
-      else
-        this.appendChild(content);
       let oldList = document.getElementById("pl-series");
       let colls = this.getAttributeNames().reduce(
         (c, s) => s.startsWith('coll-') ? c.concat([s.slice(5)]) : c,
         []
       );
+      console.log(colls);
+      console.log(oldList);
       let newItem = this.container.to_html(colls=colls);
-      if (oldList)
-        this.replaceChild(newItem, oldList);
-      else
-        this.appendChild(newItem);
+      while (oldList = document.getElementById("pl-series"))
+        oldList.remove();
+      this.appendChild(newItem);
     }
     
   }
