@@ -1,5 +1,4 @@
 import {
-  get_content,
   Container,
   set_panic_hook,
 } from "./build/wasm-pkg/parquet_viewer.js";
@@ -25,8 +24,6 @@ customElements.define(
         (c, s) => s.startsWith('coll-') ? c.concat([s.slice(5)]) : c,
         []
       );
-      console.log(colls);
-      console.log(oldList);
       let newItem = this.container.to_html(colls=colls);
       while (oldList = document.getElementById("pl-series"))
         oldList.remove();

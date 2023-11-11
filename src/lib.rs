@@ -52,33 +52,26 @@ impl Container {
         let document = window.document().expect("should have a document on window");
 
         let html_table = document.create_element("table")?;
+        html_table.set_attribute("id", "pl-series")?;
+
         let thead = document.create_element("thead")?;
         html_table.append_child(&thead)?;
         let tr = document.create_element("tr")?;
         thead.append_child(&tr)?;
-        let data_cols = {
-            let actual_columns = self.data.get_column_names();
-            if !wanted_columns.is_empty() {
-                actual_columns
-                    .into_iter()
-                    .filter(|col| {
-                        !wanted_columns
-                            .iter()
-                            .filter(|c| c == col)
-                            .collect::<Vec<_>>()
-                            .is_empty()
-                    })
-                    .collect()
-            } else {
-                actual_columns
-            }
-        };
+        let data_cols: Vec<&str> = self
+            .data
+            .get_column_names()
+            .into_iter()
+            .filter(|col| {
+                wanted_columns.iter().take_while(|s| s != col).count() != wanted_columns.len()
+            })
+            .collect();
         for col_name in &data_cols {
             let th = document.create_element("th")?;
             th.set_text_content(Some(col_name));
             tr.append_child(&th)?;
         }
-        html_table.set_attribute("id", "pl-series")?;
+
         // TODO: removes unwrap
         let selection = self.data.select(data_cols).unwrap();
         for idx in 0..selection.height() {
@@ -92,6 +85,7 @@ impl Container {
                 td.set_text_content(Some(&format!("{}", val)));
             }
         }
+
         Ok(html_table)
     }
 }
@@ -104,15 +98,4 @@ impl Container {
     pub fn get_data(&self) -> &DataFrame {
         &self.data
     }
-}
-
-#[wasm_bindgen]
-pub fn get_content(name: &str) -> Result<Element, JsValue> {
-    let window = web_sys::window().expect("no global `window` exists");
-    let document = window.document().expect("should have a document on window");
-
-    let html_node = document.create_element("p")?;
-    html_node.set_text_content(Some(&format!("Hello {} from Rust!", name)));
-    html_node.set_attribute("id", "greeting")?;
-    Ok(html_node)
 }
